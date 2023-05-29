@@ -52,9 +52,13 @@ app.post("/pipedrive/webhook", async function (req, res) {
 
         var nucleoName = fieldLabel.options.find((option) => option.id === Number(latestDeal.label)).label
 
-        var wonDate = new Date(latestDeal.won_time)
+        var wonDateString;
 
-        var wonDateString = `${wonDate.getDate()}/${wonDate.getUTCMonth() + 1}/${wonDate.getFullYear()}`
+        if(latestDeal.wonTime){
+            var wonDate = new Date(latestDeal.won_time)
+
+            var wonDateString = `${wonDate.getDate()}/${wonDate.getUTCMonth() + 1}/${wonDate.getFullYear()}`
+        }
 
         var buyer = latestDeal.person_id;
 
@@ -70,7 +74,7 @@ app.post("/pipedrive/webhook", async function (req, res) {
             latestDeal.value,
             origemName,
             organizationName,
-            wonDateString,
+            wonDateString ? wonDateString : "",
             vendedor,
             buyerName,
             buyerEmail,
