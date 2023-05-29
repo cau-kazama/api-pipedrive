@@ -19,8 +19,8 @@ app.post("/pipedrive/webhook", function (req, res) {
     const {id, status } = req.body.current;
 
     // if(status === 'won'){
-        var response = UrlFetchApp.fetch(`https://api.pipedrive.com/v1/deals/${id}?status=won&api_token=` + pipedriveAPIKey);
-        var data = JSON.parse(response.getContentText());
+        var response = fetch(`https://api.pipedrive.com/v1/deals/${id}?status=won&api_token=` + pipedriveAPIKey);
+        var data = response.json();
         var latestDeal = data.data;
 
         var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
