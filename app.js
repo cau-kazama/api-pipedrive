@@ -13,7 +13,6 @@ app.get("/", function (req, res) {
 
 app.post("/pipedrive/webhook", function (req, res) {
     console.log(req)    
-    console.log("dfsafdsfsd");
 })
 
 // start the server listening for requests
