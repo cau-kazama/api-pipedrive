@@ -18,15 +18,13 @@ app.get("/", function (req, res) {
 
 app.post("/pipedrive/webhook", async function (req, res) {
     const {id, status } = req.body.current;
-
-    console.log(req.body.current);
     
     // if(status === 'won'){
-        var response = await fetch(`https://api.pipedrive.com/v1/deals/1450?api_token=` + pipedriveAPIKey);
-        var data = response.json();
-        var latestDeal = data.data;
+        var response = await fetch(`https://api.pipedrive.com/v1/deals/${id}?api_token=` + pipedriveAPIKey);
+        var data = await response.json();
+        var latestDeal = await data.data;
 
-        console.log(data)
+        console.log(latestDeal)
 
         // var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
         // var lastRow = sheet.getLastRow();
@@ -37,7 +35,9 @@ app.post("/pipedrive/webhook", async function (req, res) {
 
         var dealField = await fetch(`https://api.pipedrive.com/v1/dealFields?api_token=` + pipedriveAPIKey);
 
-        var fieldData = dealField.json().data
+        var response = await dealField.json()
+
+        var fieldData = await response.data;
 
         var fieldOrigem = fieldData.find((field) => 
         field.name === 'Origem'
