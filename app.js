@@ -22,11 +22,11 @@ app.post("/pipedrive/webhook", async function (req, res) {
     console.log(req.body.current);
     
     // if(status === 'won'){
-        var response = await fetch(`https://api.pipedrive.com/v1/deals/${id}?api_token=` + pipedriveAPIKey);
+        var response = await fetch(`https://api.pipedrive.com/v1/deals/1450?api_token=` + pipedriveAPIKey);
         var data = response.json();
         var latestDeal = data.data;
 
-        console.log(latestDeal)
+        console.log(data)
 
         // var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
         // var lastRow = sheet.getLastRow();
