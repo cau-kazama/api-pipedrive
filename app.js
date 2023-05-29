@@ -24,9 +24,9 @@ app.post("/pipedrive/webhook", async function (req, res) {
         var data = response.json();
         var latestDeal = data.data;
 
-        var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
-        var lastRow = sheet.getLastRow();
-        var newRow = lastRow + 1;
+        // var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
+        // var lastRow = sheet.getLastRow();
+        // var newRow = lastRow + 1;
 
         var organizationName = latestDeal.org_id ? latestDeal.org_id.name : 'N/A';
 
@@ -73,7 +73,9 @@ app.post("/pipedrive/webhook", async function (req, res) {
             buyerPhone
         ];
 
-        sheet.getRange(newRow, 1, 1, rowData.length).setValues([rowData]);
+        console.log(rowData);
+
+        // sheet.getRange(newRow, 1, 1, rowData.length).setValues([rowData]);
     // }
 })
 
