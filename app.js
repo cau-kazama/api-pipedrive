@@ -24,11 +24,13 @@ app.post("/pipedrive/webhook", async function (req, res) {
         var data = response.json();
         var latestDeal = data.data;
 
+        console.log(latestDeal)
+
         // var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
         // var lastRow = sheet.getLastRow();
         // var newRow = lastRow + 1;
 
-        var organizationName = latestDeal.org_id ? latestDeal.org_id.name : 'N/A';
+        var organizationName = latestDeal?.org_id ? latestDeal?.org_id.name : 'N/A';
 
 
         var dealField = await fetch(`https://api.pipedrive.com/v1/dealFields?api_token=` + pipedriveAPIKey);
