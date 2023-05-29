@@ -12,6 +12,7 @@ app.get("/", function (req, res) {
 })
 
 app.post("/pipedrive/webhook", function (req, res) {
+    console.log(req.body.current)    
     console.log("dfsafdsfsd");
 })
 
