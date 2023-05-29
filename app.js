@@ -1,5 +1,6 @@
 // create an express app
 const express = require("express")
+const fetch = require("node-fetch");
 const app = express()
 
 var pipedriveAPIKey = '30fefb0f89944597b0a401a190df6f949e32ac4b';
@@ -15,11 +16,11 @@ app.get("/", function (req, res) {
   res.send("<h1>Hello World!</h1>")
 })
 
-app.post("/pipedrive/webhook", function (req, res) {
+app.post("/pipedrive/webhook", async function (req, res) {
     const {id, status } = req.body.current;
 
     // if(status === 'won'){
-        var response = fetch(`https://api.pipedrive.com/v1/deals/${id}?status=won&api_token=` + pipedriveAPIKey);
+        var response = await fetch(`https://api.pipedrive.com/v1/deals/${id}?api_token=` + pipedriveAPIKey);
         var data = response.json();
         var latestDeal = data.data;
 
@@ -30,9 +31,9 @@ app.post("/pipedrive/webhook", function (req, res) {
         var organizationName = latestDeal.org_id ? latestDeal.org_id.name : 'N/A';
 
 
-        var dealField = UrlFetchApp.fetch(`https://api.pipedrive.com/v1/dealFields?status=won&api_token=` + pipedriveAPIKey);
+        var dealField = await fetch(`https://api.pipedrive.com/v1/dealFields?api_token=` + pipedriveAPIKey);
 
-        var fieldData = JSON.parse(dealField).data
+        var fieldData = dealField.json().data
 
         var fieldOrigem = fieldData.find((field) => 
         field.name === 'Origem'
