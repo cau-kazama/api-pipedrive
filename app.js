@@ -94,7 +94,7 @@ app.post("/pipedrive/webhook", async function (req, res) {
             "",
             "",
             "",
-            "",
+            wonDateString ?? "",
             "",
             "",
             "",
