@@ -84,7 +84,7 @@ app.post("/pipedrive/webhook", async function (req, res) {
             nucleoName ?? "",
             "",
             "",
-            "".
+            "",
             latestDeal?.value,
             origemName ?? "",
             "",
