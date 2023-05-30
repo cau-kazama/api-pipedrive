@@ -21,6 +21,8 @@ app.get("/", function (req, res) {
 app.post("/pipedrive/webhook", async function (req, res) {
     const {id, status } = req.body.current;
     
+    console.log(status);
+
     if(status === 'won'){
         var response = await fetch(`https://api.pipedrive.com/v1/deals/${id}?api_token=` + pipedriveAPIKey);
         var data = await response.json();
