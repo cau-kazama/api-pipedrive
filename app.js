@@ -102,7 +102,6 @@ app.post("/pipedrive/webhook", async function (req, res) {
             "",
             "",
             "",
-            "",
             vendedor,
             "",
             organizationName,
