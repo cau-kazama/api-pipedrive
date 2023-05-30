@@ -1,10 +1,12 @@
 // create an express app
 const express = require("express")
 const fetch = require("node-fetch");
+const {GoogleAuth} = require('google-auth-library');
+const {Auth, google} = require('googleapis');
 const app = express()
 
 var pipedriveAPIKey = '30fefb0f89944597b0a401a190df6f949e32ac4b';
-var sheetID = '1x6x5jHiAe66SQXzjk6mUuve5B9DAzylWsT0YzMgiTFg';
+var spreadsheetId = '1x6x5jHiAe66SQXzjk6mUuve5B9DAzylWsT0YzMgiTFg';
 var sheetName = 'Página1';
 // use the express-static middleware
 app.use(express.static("public"))
@@ -23,8 +25,6 @@ app.post("/pipedrive/webhook", async function (req, res) {
         var response = await fetch(`https://api.pipedrive.com/v1/deals/${id}?api_token=` + pipedriveAPIKey);
         var data = await response.json();
         var latestDeal = await data.data;
-
-        console.log(latestDeal)
 
         // var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
         // var lastRow = sheet.getLastRow();
@@ -48,9 +48,13 @@ app.post("/pipedrive/webhook", async function (req, res) {
         var email = latestDeal.user_id.email;
         var vendedor = email.slice(0, email.indexOf('@'));
 
-        var origemName = fieldOrigem.options.find((option) => option.id === Number(latestDeal['97d0502cc2b489986844a93b374656e5acf179e1'])).label
+        var origemName;
 
-        var nucleoName = fieldLabel.options.find((option) => option.id === Number(latestDeal.label)).label
+        if(latestDeal['97d0502cc2b489986844a93b374656e5acf179e1']) { origemName = fieldOrigem.options.find((option) => option.id === Number(latestDeal['97d0502cc2b489986844a93b374656e5acf179e1'])).label}
+
+        var nucleoName;
+
+        if(latestDeal.label) nucleoName = fieldLabel.options.find((option) => option.id === Number(latestDeal.label)).label
 
         var wonDateString;
 
@@ -60,29 +64,60 @@ app.post("/pipedrive/webhook", async function (req, res) {
             var wonDateString = `${wonDate.getDate()}/${wonDate.getUTCMonth() + 1}/${wonDate.getFullYear()}`
         }
 
-        var buyer = latestDeal.person_id;
+        var buyer,buyerName, buyerPhone;
 
-        var buyerName = buyer.name;
+        if(latestDeal.person_id){
+                
+            buyer = latestDeal.person_id;
 
-        var buyerEmail = buyer.email[0].value;
+            buyerName = buyer.name;
 
-        var buyerPhone = buyer.phone[0].value;
+            buyerEmail = buyer.email[0]?.value;
 
-        var rowData = [
+            buyerPhone = buyer.phone[0]?.value;
+
+        }
+
+        var values = [[
             latestDeal.title,
-            nucleoName,
+            nucleoName ?? "",
             latestDeal.value,
-            origemName,
+            origemName ?? "",
             organizationName,
             wonDateString ? wonDateString : "",
             vendedor,
-            buyerName,
-            buyerEmail,
-            buyerPhone
+            buyerName ?? "",
+            buyerEmail ?? "",
+            buyerPhone ?? ""
+        ]
         ];
 
-        console.log(rowData);
+        const auth = new Auth.GoogleAuth({
+            keyFile: "service_account.json",
+            scopes: "https://www.googleapis.com/auth/spreadsheets",
+        });    
 
+        const client = await auth.getClient();
+
+        const service = google.sheets({version: 'v4', auth: client});
+
+        const resource = {
+            values,
+        };
+
+        try {
+            const response = await service.spreadsheets.values.update({
+                spreadsheetId,
+                range: "A1",
+                valueInputOption: "USER_ENTERED",
+                resource
+            });
+        } catch(err) {
+            console.log(err.message);
+        }
+
+        console.log(values);
+        return res.json({msg: "sucess"})
         // sheet.getRange(newRow, 1, 1, rowData.length).setValues([rowData]);
     // }
 })
