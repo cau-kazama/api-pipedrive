@@ -6,7 +6,7 @@ const {Auth, google} = require('googleapis');
 const app = express()
 
 var pipedriveAPIKey = '30fefb0f89944597b0a401a190df6f949e32ac4b';
-var spreadsheetId = '1x6x5jHiAe66SQXzjk6mUuve5B9DAzylWsT0YzMgiTFg';
+var spreadsheetId = '1fnrZgc5QlW9kDPXwgiPVcirKQe_JZ40t_KEkuS3k-Vs';
 var sheetName = 'Página1';
 // use the express-static middleware
 app.use(express.static("public"))
@@ -79,14 +79,32 @@ app.post("/pipedrive/webhook", async function (req, res) {
         var values = [[
             latestDeal.title,
             nucleoName ?? "",
+            "",
+            "",
+            "".
             latestDeal.value,
             origemName ?? "",
-            organizationName,
-            wonDateString ? wonDateString : "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             vendedor,
+            "",
+            organizationName,
+            "",
             buyerName ?? "",
+            buyerPhone ?? "",
             buyerEmail ?? "",
-            buyerPhone ?? ""
+            ""
+            //wonDateString ? wonDateString : "",
         ]
         ];
 
@@ -106,10 +124,11 @@ app.post("/pipedrive/webhook", async function (req, res) {
         try {
             const response = await service.spreadsheets.values.append({
                 spreadsheetId,
-                range: "A-J",
+                range: "C-AE",
                 valueInputOption: "USER_ENTERED",
                 resource
-            });
+            }).data;
+            console.log(JSON.stringify(response, null, 2));
         } catch(err) {
         }
 
