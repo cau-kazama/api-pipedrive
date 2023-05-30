@@ -28,6 +28,8 @@ app.post("/pipedrive/webhook", async function (req, res) {
         var data = await response.json();
         var latestDeal = await data.data;
 
+        console.log(latestDeal);
+        
         var organizationName = latestDeal?.org_id ? latestDeal?.org_id.name : 'N/A';
 
 
@@ -77,13 +79,18 @@ app.post("/pipedrive/webhook", async function (req, res) {
         }
 
         var values = [[
+            "",
             latestDeal.title,
             nucleoName ?? "",
             "",
             "",
             "".
-            latestDeal.value,
+            latestDeal?.value,
             origemName ?? "",
+            "",
+            "",
+            "",
+            "",
             "",
             "",
             "",
@@ -124,7 +131,7 @@ app.post("/pipedrive/webhook", async function (req, res) {
         try {
             const response = await service.spreadsheets.values.append({
                 spreadsheetId,
-                range: "C-AE",
+                range: "C:AF",
                 valueInputOption: "USER_ENTERED",
                 resource
             }).data;
