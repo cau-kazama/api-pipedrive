@@ -21,14 +21,10 @@ app.get("/", function (req, res) {
 app.post("/pipedrive/webhook", async function (req, res) {
     const {id, status } = req.body.current;
     
-    // if(status === 'won'){
+    if(status === 'won'){
         var response = await fetch(`https://api.pipedrive.com/v1/deals/${id}?api_token=` + pipedriveAPIKey);
         var data = await response.json();
         var latestDeal = await data.data;
-
-        // var sheet = SpreadsheetApp.openById(sheetID).getSheetByName(sheetName);
-        // var lastRow = sheet.getLastRow();
-        // var newRow = lastRow + 1;
 
         var organizationName = latestDeal?.org_id ? latestDeal?.org_id.name : 'N/A';
 
@@ -106,22 +102,18 @@ app.post("/pipedrive/webhook", async function (req, res) {
         };
 
         try {
-            const response = await service.spreadsheets.values.update({
+            const response = await service.spreadsheets.values.append({
                 spreadsheetId,
-                range: "A1",
+                range: "A-J",
                 valueInputOption: "USER_ENTERED",
                 resource
             });
         } catch(err) {
-            console.log(err.message);
         }
 
-        console.log(values);
         return res.json({msg: "sucess"})
-        // sheet.getRange(newRow, 1, 1, rowData.length).setValues([rowData]);
-    // }
+    }
 })
 
-// start the server listening for requests
 app.listen(process.env.PORT || 3000, 
 	() => console.log("Server is running..."));
